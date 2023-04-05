@@ -1,5 +1,5 @@
-const User = require('../models/index')
+const User = require("../models/index");
 
-module.exports = {
-    'user controller go here'
-};
+// module.exports = {
+//     'user controller go here'
+// };
