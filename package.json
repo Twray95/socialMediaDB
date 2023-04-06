@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^6.9.2"
+    "mongoose": "^6.9.2",
+    "mongoose-type-email": "^1.1.2",
+    "mongoose-unique-validator": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.9"
