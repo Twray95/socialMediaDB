@@ -21,7 +21,13 @@ const reactionSchema = new Schema({
 });
 
 reactionSchema.virtual("dateCreated").get(function () {
-  return this.createdAt.toLocaleDateString();
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return this.createdAt.toLocaleDateString("en-US", options);
 });
 
 module.exports = reactionSchema;
