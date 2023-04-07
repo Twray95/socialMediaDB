@@ -1,6 +1,6 @@
 const { connect, connection } = require("mongoose");
 
-const dbURL = "mongodb://localhost/videosAndResponses";
+const dbURL = "mongodb://localhost/socialMediaDB";
 
 connect(dbURL, {
   useNewUrlParser: true,
