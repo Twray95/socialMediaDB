@@ -1,7 +1,7 @@
 const Thought = require("../models/index");
 
 module.exports = {
-  getThought(req, res) {
+  getThoughts(req, res) {
     Thought.find()
       .then((thoughts) => {
         return res.status(200).json(thoughts);
@@ -13,6 +13,7 @@ module.exports = {
   },
   getOneThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
+      .populate("reactions")
       .then((oneThought) =>
         !oneThought
           ? res.status(404).json({ message: "No thought with this ID" })
@@ -39,6 +40,38 @@ module.exports = {
             })
           : res.status(200).json({ message: "Thought created!" })
       )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  updateThought(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { thoughtText: req.body.thoughtText },
+      {
+        new: true,
+      }
+    )
+      .then((updatedThought) => {
+        !updatedThought
+          ? res.status(404).json({ message: "No thought with this ID found!" })
+          : res.status(200).json(updatedThought);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  deleteThought(req, res) {
+    Thought.deleteOne({ _id: req.params.thoughtId })
+      .then((res) => {
+        !res
+          ? res.status(404).json({ message: "No thought with that ID found" })
+          : res.status(200).json({
+              message: `Thought with _id: ${req.params.thoughtId} has been deleted`,
+            });
+      })
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
