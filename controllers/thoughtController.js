@@ -1,3 +1,4 @@
+const { findOneAndUpdate } = require("../models/User");
 const { Thought, User } = require("../models/index");
 
 module.exports = {
@@ -28,7 +29,7 @@ module.exports = {
     Thought.create(req.body)
       .then((thought) => {
         return User.findOneAndUpdate(
-          { _id: req.body.userId },
+          { username: req.body.username },
           { $addToSet: { thoughts: thought._id } },
           { new: true }
         );
@@ -64,14 +65,20 @@ module.exports = {
       });
   },
   deleteThought(req, res) {
-    Thought.findOneAndDeleteOne({ _id: req.params.thoughtId })
-      .then((res) => {
-        !res
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
+      .then((response) => {
+        !response
           ? res.status(404).json({ message: "No thought with that ID found" })
-          : res.status(200).json({
-              message: `Thought with _id: ${req.params.thoughtId} has been deleted`,
-            });
+          : User.findOneAndUpdate(
+              { username: req.body.username },
+              { $pull: { thoughts: { _id: req.params.thoughtId } } }
+            );
       })
+      .then(() =>
+        res
+          .status(200)
+          .json({ message: "Thought deleted and removed from User" })
+      )
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);

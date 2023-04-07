@@ -12,10 +12,9 @@ module.exports = {
       });
   },
   getOneUser(req, res) {
-    User.findOne({ _id: req.params.studentId })
-      .select("-__v")
+    User.findOne({ _id: req.params.userId })
       .populate("thoughts")
-      .populate("friends")
+      //   .populate("friends")
       .then((oneUser) => {
         !oneUser
           ? res.status(404).json({ message: "No user with that ID found" })
@@ -56,18 +55,13 @@ module.exports = {
   },
   deleteUser(req, res) {
     User.findOneAndDelete({ _id: req.params.userId })
-      .then((user) => {
-        !user
-          ? res.status(404).json({ message: "No user with that ID found!" })
-          : Thought.deleteMany({ _id: { $in: user.thoughts } });
-      })
-      .then(() =>
-        res.status(200).json({ message: "User and Thoughts deleted" })
+      .then((deletedUser) =>
+        !deletedUser
+          ? res.status(404).json({ message: "No User with that ID" })
+          : Thought.deleteMany({ _id: { $in: deletedUser.thoughts } })
       )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+      .then(() => res.json({ message: "User and Thoughts deleted!" }))
+      .catch((err) => res.status(500).json(err));
   },
   getFriends(req, res) {
     User.findOne({ _id: req.params.userId })
