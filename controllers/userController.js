@@ -14,7 +14,7 @@ module.exports = {
   getOneUser(req, res) {
     User.findOne({ _id: req.params.userId })
       .populate("thoughts")
-      //   .populate("friends")
+      .populate("friends")
       .then((oneUser) => {
         !oneUser
           ? res.status(404).json({ message: "No user with that ID found" })

@@ -1,5 +1,5 @@
 const { findOneAndUpdate } = require("../models/User");
-const { Thought, User } = require("../models/index");
+const { Thought, User, Reaction } = require("../models/index");
 
 module.exports = {
   getThoughts(req, res) {
@@ -115,13 +115,10 @@ module.exports = {
   deleteReaction(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { $pull: { reactions: req.params.reactionId } }
+      { $pull: { reactions: { _id: req.params.reactionId } } },
+      { new: true }
     )
-      .then((thought) => {
-        !thought
-          ? res.status(404).json({ message: "No thought with that ID found" })
-          : res.status(200).json(thought);
-      })
+      .then(() => res.status(200).json({ message: "reaction deleted " }))
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
